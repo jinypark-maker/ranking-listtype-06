@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Ranking ListType 06 — 5 Variants</title>
+  <title>Ranking ListType 06 — Smart Animation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Sans+JP:wght@300;400;500;600;700&family=Inter:ital,wght@0,400;0,600;0,700;1,600&display=swap" rel="stylesheet"/>
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -11,7 +14,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       background: radial-gradient(ellipse at top, #1f2226 0%, #0e1012 70%);
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Apple SD Gothic Neo", "Helvetica Neue", Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Noto Sans KR", "Noto Sans JP", sans-serif;
       min-height: 100vh;
       color: #fff;
       -webkit-font-smoothing: antialiased;
@@ -33,247 +36,246 @@
       flex-direction: column;
       gap: 18px;
     }
-    .head {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .head { display: flex; flex-direction: column; gap: 6px; }
     .head .crumb {
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 1.4px;
-      color: rgba(255,255,255,0.4);
-      text-transform: uppercase;
+      font-size: 10px; font-weight: 600; letter-spacing: 1.4px;
+      color: rgba(255,255,255,0.4); text-transform: uppercase;
     }
     .head .title {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: #fff;
-      line-height: 1.2;
+      font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #fff; line-height: 1.2;
     }
     .head .desc {
-      font-size: 12px;
-      color: rgba(255,255,255,0.5);
-      line-height: 1.5;
-    }
-
-    .case-section {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
+      font-size: 12px; color: rgba(255,255,255,0.5); line-height: 1.5;
     }
     .section-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.45);
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
+      font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.45);
+      letter-spacing: 0.8px; text-transform: uppercase;
     }
-    .case-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .case-section, .auto-section { display: flex; flex-direction: column; gap: 8px; }
+    .case-grid { display: flex; flex-direction: column; gap: 6px; }
     .case-btn {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      background: rgba(255,255,255,0.04);
-      color: rgba(255,255,255,0.55);
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
-      text-align: left;
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; padding: 12px 14px;
+      border-radius: 10px; border: 1px solid transparent;
+      background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.55);
+      cursor: pointer; transition: all 0.2s; font-family: inherit; text-align: left;
     }
-    .case-btn:hover {
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.85);
-    }
+    .case-btn:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85); }
     .case-btn.active {
-      background: rgba(25,195,138,0.14);
-      border-color: rgba(25,195,138,0.5);
-      color: #fff;
+      background: rgba(25,195,138,0.14); border-color: rgba(25,195,138,0.5); color: #fff;
     }
     .case-btn .rank-num {
-      font-family: "SF Pro Text", sans-serif;
-      font-weight: 600;
-      font-style: italic;
-      font-size: 18px;
-      width: 22px;
-      flex-shrink: 0;
-      color: rgba(255,255,255,0.5);
-      text-align: center;
+      font-family: "Inter", sans-serif; font-weight: 600; font-style: italic;
+      font-size: 18px; width: 22px; flex-shrink: 0; color: rgba(255,255,255,0.5); text-align: center;
     }
-    .case-btn.active .rank-num {
-      color: #19c38a;
-    }
-    .case-btn .case-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-    .case-btn .case-info .key {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: -0.2px;
-    }
+    .case-btn.active .rank-num { color: #19c38a; }
+    .case-btn .case-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .case-btn .case-info .key { font-size: 12px; font-weight: 700; letter-spacing: -0.2px; }
     .case-btn .case-info .sub {
-      font-size: 10px;
-      color: rgba(255,255,255,0.4);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      font-size: 10px; color: rgba(255,255,255,0.4);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     }
     .case-btn .kbd {
-      font-size: 9px;
-      font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.5);
+      font-size: 9px; font-weight: 600; padding: 2px 6px;
+      border-radius: 4px; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.5);
     }
-    .case-btn.active .kbd {
-      background: rgba(255,255,255,0.2);
-      color: #fff;
-    }
-
-    .auto-section {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .auto-row {
-      display: flex;
-      gap: 6px;
-    }
+    .case-btn.active .kbd { background: rgba(255,255,255,0.2); color: #fff; }
     .auto-btn {
-      flex: 1;
-      padding: 10px 8px;
-      border-radius: 8px;
-      border: 1px solid transparent;
-      background: rgba(255,255,255,0.04);
-      color: rgba(255,255,255,0.55);
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      font-family: inherit;
-      transition: all 0.15s;
+      padding: 10px 8px; border-radius: 8px; border: 1px solid transparent;
+      background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.55);
+      font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; transition: all 0.15s;
     }
     .auto-btn:hover { background: rgba(255,255,255,0.08); color: #fff; }
     .auto-btn.on {
-      background: rgba(25,195,138,0.18);
-      border-color: rgba(25,195,138,0.5);
-      color: #19c38a;
+      background: rgba(25,195,138,0.18); border-color: rgba(25,195,138,0.5); color: #19c38a;
     }
-
+    .auto-row { display: flex; gap: 6px; }
+    .auto-row .auto-btn { flex: 1; }
     .footnote {
-      font-size: 10px;
-      color: rgba(255,255,255,0.32);
-      line-height: 1.6;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 10px; color: rgba(255,255,255,0.32); line-height: 1.6;
+      padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06);
     }
     .footnote kbd {
-      font-family: "SF Mono", monospace;
-      font-size: 9px;
-      padding: 1px 5px;
-      border-radius: 3px;
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.7);
-      margin: 0 2px;
+      font-family: "SF Mono", monospace; font-size: 9px;
+      padding: 1px 5px; border-radius: 3px;
+      background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); margin: 0 2px;
     }
 
-    /* === Phone frame === */
-    .phone-stage {
-      position: relative;
-      width: 375px;
-      flex-shrink: 0;
-    }
+    /* ===== Phone frame ===== */
+    .phone-stage { position: relative; width: 375px; flex-shrink: 0; }
     .phone-frame {
-      width: 375px;
-      height: 812px;
-      border-radius: 44px;
-      overflow: hidden;
+      width: 375px; height: 812px; border-radius: 44px; overflow: hidden;
       position: relative;
       box-shadow:
         0 0 0 1px rgba(255,255,255,0.06),
-        0 0 0 8px #1a1c1e,
-        0 0 0 10px #2c3036,
-        0 30px 80px rgba(0,0,0,0.6),
-        0 60px 180px rgba(0,0,0,0.45);
+        0 0 0 8px #1a1c1e, 0 0 0 10px #2c3036,
+        0 30px 80px rgba(0,0,0,0.6), 0 60px 180px rgba(0,0,0,0.45);
       background: #fff;
+      isolation: isolate;
     }
-    .phone-img {
+    .base-img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
+      z-index: 1;
+      user-select: none;
+      pointer-events: none;
+    }
+    /* Mask over the ranking area in the base image */
+    .ranking-mask {
+      position: absolute;
+      top: 343px;
+      left: 0;
+      width: 375px;
+      height: 348px;
+      background: #fff;
+      z-index: 2;
+    }
+
+    /* ===== Ranking rows ===== */
+    .ranking-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .rank-row {
+      position: absolute;
+      left: 16px;
+      width: 343px;
+      height: 56px;
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 50px;
+      transition:
+        top 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+        height 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+        width 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+        border-color 0.4s ease,
+        border-radius 0.5s ease,
+        box-shadow 0.4s ease;
+      overflow: hidden;
+      will-change: top, height;
+    }
+    .rank-row.featured {
+      width: 351px;
+      height: 73px;
+      border-radius: 46px;
+      border-color: #19c38a;
+      box-shadow: 0 4px 16px rgba(25,195,138,0.12);
+    }
+    .rank-num {
+      position: absolute;
+      left: 38px;
+      top: 14px;
+      font-family: "Inter", "SF Pro Text", sans-serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 23px;
+      line-height: 1;
+      letter-spacing: -1.15px;
+      color: #131313;
+      transition: all 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .rank-row.featured .rank-num {
+      left: 35px;
+      top: 21px;
+      font-size: 25px;
+      letter-spacing: -1.25px;
+      color: #00a36d;
+    }
+    .rank-title {
+      position: absolute;
+      left: 66px;
+      top: 18px;
+      width: 224px;
+      font-family: "Noto Sans KR", "Apple SD Gothic Neo", "Hiragino Sans", sans-serif;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 20px;
+      color: #131313;
+      letter-spacing: -0.3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      white-space: nowrap;
+      transition: all 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .rank-title .num {
+      font-family: "Inter", "SF Pro Text", sans-serif;
+      font-weight: 400;
+    }
+    .rank-row.featured .rank-title {
+      top: 17px;
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 19px;
+      white-space: normal;
+      -webkit-line-clamp: 2;
+      max-height: 40px;
+      background: linear-gradient(124deg, rgb(0,119,79) 6%, rgb(7,57,40) 13%, #000 61%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .rank-thumb {
+      position: absolute;
+      right: 18px;
+      top: 6px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #e8e8e8;
+      transition:
+        right 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+        top 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+        width 0.55s cubic-bezier(0.32, 0.72, 0, 1),
+        height 0.55s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .rank-row.featured .rank-thumb {
+      right: 12px;
+      top: 7px;
+      width: 58px;
+      height: 58px;
+    }
+    .rank-thumb .thumb-img {
       position: absolute;
       inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      opacity: 0;
-      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .phone-img.active { opacity: 1; }
+    .rank-thumb .split-2 .thumb-img:nth-child(1) { clip-path: inset(0 50% 0 0); }
+    .rank-thumb .split-2 .thumb-img:nth-child(2) { clip-path: inset(0 0 0 50%); }
+    .rank-thumb .split-3 .thumb-img:nth-child(1) { clip-path: inset(0 66.67% 0 0); }
+    .rank-thumb .split-3 .thumb-img:nth-child(2) { clip-path: inset(0 33.33% 0 33.33%); }
+    .rank-thumb .split-3 .thumb-img:nth-child(3) { clip-path: inset(0 0 0 66.67%); }
 
-    /* notch overlay */
-    .notch {
-      position: absolute;
-      top: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 0;
-      height: 0;
-      pointer-events: none;
-    }
-
-    .phone-caption {
-      margin-top: 22px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .phone-caption .node {
-      font-family: "SF Mono", monospace;
-      font-size: 11px;
-      color: rgba(255,255,255,0.45);
-      letter-spacing: 0.4px;
-    }
-    .phone-caption .label {
-      font-size: 13px;
-      font-weight: 600;
-      color: #fff;
-      letter-spacing: -0.2px;
-    }
-    .phone-caption .accent {
-      color: #19c38a;
-    }
-
-    /* Progress dots */
+    /* Caption */
     .progress-row {
-      margin-top: 16px;
-      display: flex;
-      justify-content: center;
-      gap: 6px;
+      margin-top: 16px; display: flex; justify-content: center; gap: 6px;
     }
     .dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
+      width: 6px; height: 6px; border-radius: 50%;
       background: rgba(255,255,255,0.15);
-      transition: all 0.3s;
+      transition: all 0.3s; cursor: pointer;
     }
-    .dot.active {
-      width: 24px;
-      border-radius: 3px;
-      background: #19c38a;
+    .dot.active { width: 24px; border-radius: 3px; background: #19c38a; }
+    .phone-caption {
+      margin-top: 22px; text-align: center; display: flex; flex-direction: column; gap: 4px;
     }
+    .phone-caption .node {
+      font-family: "SF Mono", monospace; font-size: 11px;
+      color: rgba(255,255,255,0.45); letter-spacing: 0.4px;
+    }
+    .phone-caption .label {
+      font-size: 13px; font-weight: 600; color: #fff; letter-spacing: -0.2px;
+    }
+    .phone-caption .accent { color: #19c38a; }
 
     @media (max-width: 900px) {
       .page { flex-direction: column; gap: 32px; padding: 24px 16px; }
@@ -284,50 +286,125 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState, useEffect, useRef } = React;
+const { useState, useEffect, useRef, useMemo } = React;
 
 const VARIANTS = [
+  { rank: 1, nodeId: "211:103523", key: "BTS", sub: "3년 9개월 만에 5집 앨범 〈아리랑〉" },
+  { rank: 2, nodeId: "211:103888", key: "WBC", sub: "오타니 대 트라우트 재대결" },
+  { rank: 3, nodeId: "211:104266", key: "나츠키", sub: "VOCE 6월호 단독 표지" },
+  { rank: 4, nodeId: "211:104649", key: "우메다 사이퍼", sub: "3집 앨범 9월 24일 발매" },
+  { rank: 5, nodeId: "211:105026", key: "LISA", sub: "그래미 12개 부문 수상" }
+];
+
+// Rank 데이터 (썸네일, 텍스트 fragments)
+const RANK_DATA = [
   {
-    rank: 1,
-    nodeId: "211:103523",
-    image: "images/figma-1.png",
-    key: "BTS",
-    sub: "3년 9개월 만에 5집 앨범",
-    color: "#920000"
+    thumbs: ["images/thumb-0.png"],
+    title: [
+      { t: "BTS, ", k: "kr" },
+      { t: "3", k: "num" },
+      { t: "년 ", k: "kr" },
+      { t: "9", k: "num" },
+      { t: "개월 만에 ", k: "kr" },
+      { t: "5", k: "num" },
+      { t: "집 앨범 〈아리랑〉 발매 인기 뜨거워", k: "kr" }
+    ]
   },
   {
-    rank: 2,
-    nodeId: "211:103888",
-    image: "images/figma-2.png",
-    key: "WBC",
-    sub: "오타니 대 트라우트 재대결",
-    color: "#185949"
+    thumbs: ["images/thumb-1.png", "images/thumb-2.png"],
+    title: [
+      { t: "오늘 ", k: "kr" },
+      { t: "9", k: "num" },
+      { t: "시", k: "kr" },
+      { t: ", WBC", k: "num" },
+      { t: " 오타니 대 트라우트 재대결 방영 시작", k: "kr" }
+    ]
   },
   {
-    rank: 3,
-    nodeId: "211:104266",
-    image: "images/figma-3.png",
-    key: "나츠키",
-    sub: "VOCE 6월호 단독 표지",
-    color: "#377fb9"
+    thumbs: ["images/thumb-3.png", "images/thumb-4.png"],
+    title: [
+      { t: "나츠키, 뷰티 잡지", k: "kr" },
+      { t: " 『VOCE』 6", k: "num" },
+      { t: "월호에서 ", k: "kr" },
+      { t: "3", k: "num" },
+      { t: "종 단독 표지 등장", k: "kr" }
+    ]
   },
   {
-    rank: 4,
-    nodeId: "211:104649",
-    image: "images/figma-4.png",
-    key: "우메다 사이퍼",
-    sub: "3집 앨범 9월 24일 발매",
-    color: "#6e5d41"
+    thumbs: ["images/thumb-5.png"],
+    title: [
+      { t: "우메다 사이퍼, ", k: "kr" },
+      { t: "3", k: "num" },
+      { t: "집 앨범 ", k: "kr" },
+      { t: "『HAPPY RETENTION』 9", k: "num" },
+      { t: "월 ", k: "kr" },
+      { t: "24", k: "num" },
+      { t: "일 발매...", k: "kr" }
+    ]
   },
   {
-    rank: 5,
-    nodeId: "211:105026",
-    image: "images/figma-5.png",
-    key: "LISA",
-    sub: "그래미 12개 부문 수상",
-    color: "#2d4372"
+    thumbs: ["images/thumb-6.png", "images/thumb-7.png", "images/thumb-8.png"],
+    title: [
+      { t: "LISA", k: "num" },
+      { t: " 그래미 ", k: "kr" },
+      { t: "12", k: "num" },
+      { t: "개 부문에서 깜짝 수상한 소감이 화제", k: "kr" }
+    ]
   }
 ];
+
+const TOP_BASE = 349;
+const NORMAL_H = 56;
+const FEATURED_H = 73;
+const GAP = 8;
+
+function getRowTop(rowIdx, featuredIdx) {
+  let top = TOP_BASE;
+  for (let i = 0; i < rowIdx; i++) {
+    top += (i === featuredIdx ? FEATURED_H : NORMAL_H) + GAP;
+  }
+  return top;
+}
+
+function Thumb({ rankIdx }) {
+  const thumbs = RANK_DATA[rankIdx].thumbs;
+  const splitClass = thumbs.length === 2 ? "split-2" : thumbs.length === 3 ? "split-3" : "";
+  return (
+    <div className={splitClass} style={{position: "absolute", inset: 0}}>
+      {thumbs.map((src, i) => (
+        <img key={i} src={src} className="thumb-img" alt=""/>
+      ))}
+    </div>
+  );
+}
+
+function RankTitle({ rankIdx }) {
+  const fragments = RANK_DATA[rankIdx].title;
+  return (
+    <>{fragments.map((f, i) => (
+      <span key={i} className={f.k === "num" ? "num" : ""}>{f.t}</span>
+    ))}</>
+  );
+}
+
+function RankRow({ rankIdx, featuredIdx }) {
+  const isFeatured = rankIdx === featuredIdx;
+  const top = getRowTop(rankIdx, featuredIdx);
+  return (
+    <div
+      className={"rank-row" + (isFeatured ? " featured" : "")}
+      style={{ top: top + "px" }}
+    >
+      <div className="rank-num">{rankIdx + 1}</div>
+      <div className="rank-title">
+        <RankTitle rankIdx={rankIdx}/>
+      </div>
+      <div className="rank-thumb">
+        <Thumb rankIdx={rankIdx}/>
+      </div>
+    </div>
+  );
+}
 
 function App() {
   const [active, setActive] = useState(0);
@@ -372,7 +449,7 @@ function App() {
         <div className="head">
           <div className="crumb">2026.05 Ranking Ideation</div>
           <div className="title">Ranking ListType 06</div>
-          <div className="desc">동일한 TOP 5 모듈에서 강조되는 랭크 위치만 달라지는 5개 variant를 비교합니다.</div>
+          <div className="desc">TOP 5 모듈에서 강조 위치가 부드럽게 morph하는 5개 variant — Figma smart animation 스타일.</div>
         </div>
 
         <div className="case-section">
@@ -420,15 +497,13 @@ function App() {
 
       <div className="phone-stage">
         <div className="phone-frame">
-          {VARIANTS.map((v, i) => (
-            <img
-              key={v.rank}
-              src={v.image}
-              alt={`Rank ${v.rank} featured`}
-              className={"phone-img" + (active === i ? " active" : "")}
-              loading={i === 0 ? "eager" : "lazy"}
-            />
-          ))}
+          <img className="base-img" src="images/figma-1.png" alt="" draggable="false"/>
+          <div className="ranking-mask"/>
+          <div className="ranking-overlay">
+            {RANK_DATA.map((_, i) => (
+              <RankRow key={i} rankIdx={i} featuredIdx={active}/>
+            ))}
+          </div>
         </div>
         <div className="progress-row">
           {VARIANTS.map((v, i) => (
@@ -436,14 +511,11 @@ function App() {
               key={v.rank}
               className={"dot" + (active === i ? " active" : "")}
               onClick={() => { setAuto(false); setActive(i); }}
-              style={{cursor: "pointer"}}
             />
           ))}
         </div>
         <div className="phone-caption">
-          <div className="label">
-            Rank <span className="accent">#{cur.rank}</span> · {cur.key}
-          </div>
+          <div className="label">Rank <span className="accent">#{cur.rank}</span> · {cur.key}</div>
           <div className="node">{cur.nodeId}</div>
         </div>
       </div>
