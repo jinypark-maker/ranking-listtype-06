@@ -278,8 +278,23 @@
     .phone-caption .accent { color: #19c38a; }
 
     @media (max-width: 900px) {
-      .page { flex-direction: column; gap: 32px; padding: 24px 16px; }
+      .page { flex-direction: column; gap: 24px; padding: 24px 16px; }
       .sidebar { width: 100%; max-width: 375px; }
+    }
+    @media (max-width: 440px) {
+      .page { padding: 16px 0; gap: 16px; }
+      .sidebar { padding: 0 16px; }
+      .phone-stage {
+        transform: scale(0.86);
+        transform-origin: top center;
+        margin-bottom: -120px;
+      }
+    }
+    @media (max-width: 380px) {
+      .phone-stage {
+        transform: scale(0.78);
+        margin-bottom: -180px;
+      }
     }
   </style>
 </head>
