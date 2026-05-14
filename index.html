@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Ranking ListType 06</title>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: #1a1a1a;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Hiragino Sans", "Apple SD Gothic Neo", "Helvetica Neue", Arial, sans-serif;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      color: #fff;
+    }
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 48px;
+      gap: 24px;
+    }
+    .case-selector {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .case-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .case-row {
+      display: flex;
+      gap: 6px;
+    }
+    .case-btn {
+      flex: 1;
+      padding: 12px 8px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.5);
+      font-size: 12px;
+      font-weight: 700;
+      font-family: inherit;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .case-btn:hover {
+      background: rgba(255,255,255,0.14);
+      color: rgba(255,255,255,0.9);
+    }
+    .case-btn.active {
+      background: #fff;
+      color: #111;
+    }
+    .case-btn .sub {
+      font-size: 9px;
+      font-weight: 500;
+      opacity: 0.7;
+    }
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      background: #fff;
+      border-radius: 40px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 0 0 8px #2a2a2a, 0 0 0 9px #444;
+    }
+    .scroll-area {
+      width: 100%;
+      height: 100%;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .scroll-area::-webkit-scrollbar { display: none; }
+    .canvas {
+      position: relative;
+      width: 375px;
+      height: 1320px;
+      background: #fff;
+    }
+    /* === Status bar === */
+    .status-bar {
+      position: absolute;
+      top: 0; left: 0;
+      width: 375px;
+      height: 47px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px 0 36px;
+      font-family: "SF Pro", -apple-system, sans-serif;
+      font-weight: 600;
+      font-size: 17px;
+      color: #000;
+      z-index: 10;
+      background: #fff;
+    }
+    .status-time {
+      letter-spacing: -0.4px;
+      padding-top: 16px;
+    }
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-top: 16px;
+    }
+    .status-bar svg { display: block; }
+
+    /* === Header === */
+    .header {
+      position: absolute;
+      top: 47px; left: 0;
+      width: 375px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    .header-title {
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 700;
+      font-size: 20px;
+      color: #111;
+      letter-spacing: -0.4px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .icon-btn {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* === Profile row === */
+    .profile-row {
+      position: absolute;
+      top: 99px; left: 16px;
+      width: 343px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .profile-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ffd2c0, #f4a89a);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .profile-name {
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      color: #111;
+    }
+
+    /* === Friends list grid === */
+    .grid-cards {
+      position: absolute;
+      top: 175px;
+      left: 16px;
+      width: 343px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .grid-card {
+      background: #fff;
+      border: 1px solid #efefef;
+      border-radius: 16px;
+      padding: 14px 16px 16px;
+    }
+    .grid-card-header {
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      color: #111;
+      margin-bottom: 10px;
+    }
+    .grid-card-items {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .grid-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      max-width: 60px;
+    }
+    .grid-item-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f5f5f5;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .grid-item-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .grid-item-label {
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 500;
+      font-size: 11px;
+      color: #2a2a2a;
+      text-align: center;
+      line-height: 1.2;
+    }
+    .friends-avatars {
+      display: flex;
+      gap: -8px;
+    }
+    .friend-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #ddd;
+      border: 2px solid #fff;
+      margin-left: -8px;
+      overflow: hidden;
+    }
+    .friend-avatar:first-child { margin-left: 0; }
+    .friend-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* === News card === */
+    .news-card {
+      position: absolute;
+      top: 555px;
+      left: 16px;
+      width: 343px;
+      border: 1px solid #efefef;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+    }
+    .news-image {
+      position: relative;
+      width: 100%;
+      height: 193px;
+      overflow: hidden;
+      background: #000;
+    }
+    .news-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .news-image::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0; bottom: 0; height: 60px;
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 100%);
+    }
+    .news-body {
+      padding: 12px 14px 14px;
+    }
+    .news-publisher {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+    .news-pub-label {
+      font-family: "Hiragino Sans", sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      color: #111;
+    }
+    .news-pub-web {
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 600;
+      font-size: 11px;
+      color: #111;
+    }
+    .news-pub-source {
+      font-family: "SF Pro Text", sans-serif;
+      font-size: 10px;
+      color: #777;
+      margin-left: auto;
+    }
+    .news-title {
+      font-family: "Hiragino Sans", sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #111;
+      margin-bottom: 10px;
+      letter-spacing: -0.2px;
+    }
+    .news-meta {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: "SF Pro Text", sans-serif;
+      font-size: 11px;
+      color: #909090;
+    }
+    .news-meta .reactions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .news-meta .reactions-count {
+      font-weight: 590;
+      color: #111;
+    }
+    .sound-pill {
+      position: absolute;
+      top: 161px;
+      right: 12px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* === For You header === */
+    .for-you-section {
+      position: absolute;
+      top: 850px;
+      left: 0;
+      width: 375px;
+    }
+    .for-you-title {
+      padding: 0 16px;
+      font-family: "Apple SD Gothic Neo", "Hiragino Sans", sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      line-height: 22px;
+      letter-spacing: -0.4px;
+      white-space: nowrap;
+      margin-bottom: 4px;
+    }
+    .for-you-title .entertain { color: #00a36d; }
+    .for-you-title .five {
+      color: #00a36d;
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 900;
+      font-style: italic;
+    }
+    .for-you-sub {
+      padding: 6px 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .pub-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      overflow: hidden;
+      background: #e8e8e8;
+      flex-shrink: 0;
+    }
+    .pub-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .pub-name {
+      font-family: "Hiragino Sans", sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      color: #111;
+      flex: 1;
+    }
+    .follow-btn {
+      height: 28px;
+      padding: 0 12px;
+      border-radius: 14px;
+      border: 1px solid #efefef;
+      background: #fff;
+      font-family: "Hiragino Sans", sans-serif;
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: -0.3px;
+      color: #111;
+      cursor: pointer;
+    }
+
+    /* === Square cover === */
+    .square-cover {
+      position: absolute;
+      top: 942px;
+      left: 16px;
+      width: 343px;
+      height: 343px;
+      border-radius: 10px 10px 0 0;
+      overflow: hidden;
+      background: linear-gradient(135deg, #b8e6c4, #f5b6c8);
+    }
+    .square-cover img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+    .square-sound {
+      position: absolute;
+      top: 307px;
+      left: 307px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .square-desc {
+      position: absolute;
+      top: 1295px;
+      left: 16px;
+      width: 343px;
+      font-family: "Hiragino Sans", sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #111;
+    }
+
+    /* === Ranking rows === */
+    .ranking-area {
+      position: absolute;
+      left: 0;
+      top: 349px;
+      width: 375px;
+    }
+    .rank-row {
+      position: absolute;
+      left: 16px;
+      background: #fafafa;
+      border: 1px solid #efefef;
+      border-radius: 50px;
+      height: 56px;
+      width: 343px;
+      transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      padding: 0 60px 0 38px;
+    }
+    .rank-row.featured {
+      height: 73px;
+      width: 351px;
+      border-radius: 46px;
+      border-color: #19c38a;
+      padding: 0 70px 0 35px;
+      z-index: 2;
+    }
+    .rank-number {
+      position: absolute;
+      left: 38px;
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 23px;
+      letter-spacing: -1.15px;
+      color: #131313;
+      width: 14px;
+      text-align: left;
+      transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .rank-row.featured .rank-number {
+      left: 35px;
+      font-size: 25px;
+      letter-spacing: -1.25px;
+      color: #00a36d;
+    }
+    .rank-title {
+      position: absolute;
+      left: 66px;
+      width: 224px;
+      font-size: 15px;
+      line-height: 20px;
+      font-family: "Apple SD Gothic Neo", "Hiragino Sans", sans-serif;
+      font-weight: 400;
+      color: #131313;
+      letter-spacing: -0.3px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .rank-title .num {
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 400;
+    }
+    .rank-row.featured .rank-title {
+      white-space: normal;
+      background: linear-gradient(124deg, rgb(0,119,79) 6%, rgb(7,57,40) 13%, rgb(0,0,0) 61%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      font-weight: 500;
+      max-height: 60px;
+      overflow: hidden;
+    }
+    .rank-thumb {
+      position: absolute;
+      right: 22px;
+      top: 6px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #e8e8e8;
+      transition: all 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .rank-row.featured .rank-thumb {
+      right: 16px;
+      top: 7px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+    }
+    .rank-thumb img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .rank-thumb .layer-2 {
+      clip-path: inset(0 0 0 50%);
+    }
+    .rank-thumb .layer-3 {
+      clip-path: inset(0 0 0 66%);
+    }
+
+    /* === Bottom tab bar === */
+    .tab-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 375px;
+      height: 83px;
+      background: #fff;
+      border-top: 1px solid #efefef;
+      display: flex;
+      align-items: flex-start;
+      padding-top: 8px;
+    }
+    .tab-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .tab-icon {
+      width: 28px; height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tab-label {
+      font-family: "SF Pro Text", sans-serif;
+      font-weight: 400;
+      font-size: 9px;
+      color: #111;
+    }
+    .tab-item.active .tab-label { font-weight: 600; }
+    .home-indicator {
+      position: absolute;
+      bottom: 9px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 134px;
+      height: 5px;
+      border-radius: 3px;
+      background: #000;
+    }
+
+    /* Auto-play indicator */
+    .autoplay-control {
+      width: 100%;
+      max-width: 600px;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .ap-btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.55);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: inherit;
+    }
+    .ap-btn.on {
+      background: rgba(25,195,138,0.2);
+      color: #19c38a;
+    }
+    .title-row {
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .title-row .t1 {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.4px;
+    }
+    .title-row .t2 {
+      font-size: 11px;
+      color: rgba(255,255,255,0.32);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useRef } = React;
+
+const RANKS = [
+  {
+    rank: 1,
+    thumbs: ["images/thumb-0.png"],
+    thumbOffset: { single: { left: "-62.77%", top: "-8.34%", width: "188.73%", height: "125.92%" } },
+    fragments: [
+      { kind: "kr", text: "BTS, " },
+      { kind: "num", text: "3" },
+      { kind: "kr", text: "년 " },
+      { kind: "num", text: "9" },
+      { kind: "kr", text: "개월 만에 " },
+      { kind: "num", text: "5" },
+      { kind: "kr", text: "집 앨범 〈아리랑〉 발매 인기 뜨거워" }
+    ]
+  },
+  {
+    rank: 2,
+    thumbs: ["images/thumb-1.png", "images/thumb-2.png"],
+    fragments: [
+      { kind: "kr", text: "오늘 " },
+      { kind: "num", text: "9" },
+      { kind: "kr", text: "시" },
+      { kind: "num", text: ", WBC" },
+      { kind: "kr", text: " 오타니 대 트라우트 재대결 방영 시작" }
+    ]
+  },
+  {
+    rank: 3,
+    thumbs: ["images/thumb-3.png", "images/thumb-4.png"],
+    fragments: [
+      { kind: "kr", text: "나츠키, 뷰티 잡지" },
+      { kind: "num", text: " 『VOCE』 6" },
+      { kind: "kr", text: "월호에서 " },
+      { kind: "num", text: "3" },
+      { kind: "kr", text: "종 단독 표지 등장" }
+    ]
+  },
+  {
+    rank: 4,
+    thumbs: ["images/thumb-5.png"],
+    fragments: [
+      { kind: "kr", text: "우메다 사이퍼, " },
+      { kind: "num", text: "3" },
+      { kind: "kr", text: "집 앨범 " },
+      { kind: "num", text: "『HAPPY RETENTION』 9" },
+      { kind: "kr", text: "월 " },
+      { kind: "num", text: "24" },
+      { kind: "kr", text: "일 발매..." }
+    ]
+  },
+  {
+    rank: 5,
+    thumbs: ["images/thumb-6.png", "images/thumb-7.png", "images/thumb-8.png"],
+    fragments: [
+      { kind: "num", text: "LISA" },
+      { kind: "kr", text: " 그래미 " },
+      { kind: "num", text: "12" },
+      { kind: "kr", text: "개 부문에서 깜짝 수상한 소감이 화제" }
+    ]
+  }
+];
+
+const ROW_HEIGHT_NORMAL = 56;
+const ROW_HEIGHT_FEATURED = 73;
+const ROW_GAP = 6;
+const TOP_BASE = 349;
+
+function getRowTop(idx, featuredIdx) {
+  let top = TOP_BASE;
+  for (let i = 0; i < idx; i++) {
+    top += (i === featuredIdx ? ROW_HEIGHT_FEATURED : ROW_HEIGHT_NORMAL) + ROW_GAP;
+  }
+  return top;
+}
+
+function Thumb({ rank }) {
+  const data = RANKS[rank];
+  if (data.thumbs.length === 1) {
+    if (data.thumbOffset && data.thumbOffset.single) {
+      return (
+        <img
+          src={data.thumbs[0]}
+          style={{
+            position: "absolute",
+            left: data.thumbOffset.single.left,
+            top: data.thumbOffset.single.top,
+            width: data.thumbOffset.single.width,
+            height: data.thumbOffset.single.height,
+            objectFit: "cover",
+            maxWidth: "none"
+          }}
+          alt=""
+        />
+      );
+    }
+    return <img src={data.thumbs[0]} alt="" />;
+  }
+  if (data.thumbs.length === 2) {
+    return (
+      <>
+        <img src={data.thumbs[0]} style={{ clipPath: "inset(0 50% 0 0)" }} alt=""/>
+        <img src={data.thumbs[1]} style={{ clipPath: "inset(0 0 0 50%)" }} alt=""/>
+      </>
+    );
+  }
+  // 3 layers
+  return (
+    <>
+      <img src={data.thumbs[0]} style={{ clipPath: "inset(0 66.66% 0 0)" }} alt=""/>
+      <img src={data.thumbs[1]} style={{ clipPath: "inset(0 33.33% 0 33.33%)" }} alt=""/>
+      <img src={data.thumbs[2]} style={{ clipPath: "inset(0 0 0 66.66%)" }} alt=""/>
+    </>
+  );
+}
+
+function RankTitle({ rank, featured }) {
+  const data = RANKS[rank];
+  return (
+    <>{data.fragments.map((f, i) => (
+      <span key={i} className={f.kind === "num" ? "num" : ""}>{f.text}</span>
+    ))}</>
+  );
+}
+
+function StatusBar() {
+  return (
+    <div className="status-bar">
+      <div className="status-time">9:41</div>
+      <div className="status-icons">
+        {/* Signal */}
+        <svg width="18" height="10" viewBox="0 0 18 10" fill="none">
+          <rect x="0" y="6" width="3" height="4" rx="0.5" fill="#000"/>
+          <rect x="5" y="4" width="3" height="6" rx="0.5" fill="#000"/>
+          <rect x="10" y="2" width="3" height="8" rx="0.5" fill="#000"/>
+          <rect x="15" y="0" width="3" height="10" rx="0.5" fill="#000"/>
+        </svg>
+        {/* Wifi */}
+        <svg width="16" height="11" viewBox="0 0 16 11" fill="none">
+          <path d="M8 11l2-2c-.6-.6-1.4-1-2-1s-1.4.4-2 1l2 2zm-4-4l1.5-1.5C6.5 4.5 7.2 4 8 4s1.5.5 2.5 1.5L12 7c-1.2-1.2-2.5-2-4-2s-2.8.8-4 2zm-3-3l1.5-1.5C4 1 6 0 8 0s4 1 5.5 2.5L15 4c-1.8-1.8-4.3-3-7-3s-5.2 1.2-7 3z" fill="#000"/>
+        </svg>
+        {/* Battery */}
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none">
+          <rect x="0.5" y="0.5" width="22" height="12" rx="3" stroke="#000" fill="none" opacity="0.35"/>
+          <rect x="2" y="2" width="19" height="9" rx="1.5" fill="#000"/>
+          <rect x="24" y="4.5" width="1.5" height="4" rx="0.5" fill="#000" opacity="0.4"/>
+        </svg>
+      </div>
+    </div>
+  );
+}
+
+function Header() {
+  return (
+    <div className="header">
+      <div className="header-title"></div>
+      <div className="header-actions">
+        <div className="icon-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="#111" strokeWidth="1.6"/>
+            <path d="M9 12l2 2 4-4" stroke="#111" strokeWidth="1.6" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </div>
+        <div className="icon-btn">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="9.4" stroke="#111" strokeWidth="1.6"/>
+            <circle cx="12" cy="12" r="3" fill="#111"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProfileRow() {
+  return (
+    <div className="profile-row">
+      <div className="profile-avatar">
+        <img src="images/profile-2.png" alt="Naomi" onError={(e)=>{e.target.style.display='none'}}/>
+      </div>
+      <div className="profile-name">Naomi</div>
+    </div>
+  );
+}
+
+function GridCards() {
+  return (
+    <div className="grid-cards">
+      <div className="grid-card">
+        <div className="grid-card-header">Friends list</div>
+        <div className="friends-avatars">
+          <div className="friend-avatar"><img src="images/avatar-1.png" alt="" onError={(e)=>{e.target.style.display='none'}}/></div>
+          <div className="friend-avatar"><img src="images/avatar-2.png" alt="" onError={(e)=>{e.target.style.display='none'}}/></div>
+          <div className="friend-avatar" style={{background:'#ffd2c0'}}></div>
+          <div className="friend-avatar" style={{background:'#c4d6e8'}}></div>
+          <div className="friend-avatar" style={{background:'#d8c4e8'}}></div>
+        </div>
+      </div>
+      <div className="grid-card">
+        <div className="grid-card-header">Recently used</div>
+        <div className="grid-card-items">
+          <div className="grid-item">
+            <div className="grid-item-icon" style={{background:'#FF6B35'}}>
+              <span style={{color:'#fff',fontSize:14,fontWeight:700}}>P</span>
+            </div>
+            <div className="grid-item-label">LYP<br/>Premium</div>
+          </div>
+          <div className="grid-item">
+            <div className="grid-item-icon" style={{background:'#06C755'}}>
+              <span style={{color:'#fff',fontSize:14,fontWeight:700}}>S</span>
+            </div>
+            <div className="grid-item-label">LINE<br/>Sukimani</div>
+          </div>
+        </div>
+      </div>
+      <div className="grid-card">
+        <div className="grid-card-header">Services</div>
+        <div className="grid-card-items">
+          <div className="grid-item">
+            <div className="grid-item-icon" style={{background:'linear-gradient(135deg,#9c5fff,#5fa3ff)'}}>
+              <span style={{color:'#fff',fontSize:13,fontWeight:700}}>i</span>
+            </div>
+            <div className="grid-item-label">Agent i</div>
+          </div>
+          <div className="grid-item">
+            <div className="grid-item-icon" style={{background:'#FF6B6B'}}>
+              <span style={{color:'#fff',fontSize:14}}>♥</span>
+            </div>
+            <div className="grid-item-label">Stickers</div>
+          </div>
+          <div className="grid-item">
+            <div className="grid-item-icon" style={{background:'#FFC107'}}>
+              <span style={{color:'#fff',fontSize:14}}>★</span>
+            </div>
+            <div className="grid-item-label">Themes</div>
+          </div>
+          <div className="grid-item">
+            <div className="grid-item-icon" style={{background:'#06C755'}}>
+              <span style={{color:'#fff',fontSize:14}}>🎁</span>
+            </div>
+            <div className="grid-item-label">LINE GIFT</div>
+          </div>
+          <div className="grid-item">
+            <div className="grid-item-icon" style={{background:'#000'}}>
+              <span style={{color:'#fff',fontSize:14}}>▶</span>
+            </div>
+            <div className="grid-item-label">VOOM</div>
+          </div>
+        </div>
+      </div>
+      <div className="grid-card">
+        <div className="grid-card-header">New</div>
+        <div className="grid-card-items">
+          <div className="grid-item" style={{maxWidth:'none',flex:'0 0 auto',flexDirection:'row',gap:8,alignItems:'center'}}>
+            <div className="grid-item-icon" style={{background:'#FFD93D',width:28,height:28}}>
+              <span style={{fontSize:12}}>🎂</span>
+            </div>
+            <div className="grid-item-label" style={{textAlign:'left'}}>Friend's birthday</div>
+          </div>
+          <div className="grid-item" style={{maxWidth:'none',flex:'0 0 auto',flexDirection:'row',gap:8,alignItems:'center',marginLeft:16}}>
+            <div className="grid-item-icon" style={{background:'#06C755',width:28,height:28}}>
+              <span style={{fontSize:12,color:'#fff'}}>👤</span>
+            </div>
+            <div className="grid-item-label" style={{textAlign:'left'}}>Profile updated</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NewsCard() {
+  return (
+    <div className="news-card">
+      <div className="news-image">
+        <img src="images/news-card-3.png" alt="" onError={(e)=>{
+          e.target.style.display='none';
+          e.target.parentElement.style.background='linear-gradient(135deg,#f4a89a,#6e4030)';
+        }}/>
+        <div className="sound-pill">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M6 3L3 5.5H1.5v3H3L6 11V3z" fill="#fff"/>
+            <path d="M8 5c.8.5 1.3 1.2 1.3 2s-.5 1.5-1.3 2" stroke="#fff" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div className="news-body">
+        <div className="news-publisher">
+          <span className="news-pub-label">東スポ</span>
+          <span className="news-pub-web">WEB</span>
+          <span className="news-pub-source">LINE News</span>
+        </div>
+        <div className="news-title">『今日、好きになりました。』最新シリーズ"テグ編"にひなた＆もか＆るい＆りくとが継続参加 主題歌は「恋風」に続き幾田りらが担当</div>
+        <div className="news-meta">
+          <span>5 </span><span style={{fontFamily:'"Hiragino Sans",sans-serif'}}>分前</span>
+          <div className="reactions">
+            <svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#FFD93D"/><circle cx="5" cy="6" r="0.8" fill="#111"/><circle cx="9" cy="6" r="0.8" fill="#111"/><path d="M4.5 8.5q2.5 2 5 0" stroke="#111" strokeWidth="0.7" fill="none"/></svg>
+            <span className="reactions-count">84,736</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ForYouSection() {
+  return (
+    <div className="for-you-section">
+      <div className="for-you-title">
+        당신을 위한 <span className="entertain">엔터테인먼트</span> <span className="five">5</span>
+      </div>
+      <div className="for-you-sub">
+        <div className="pub-avatar">
+          <img src="images/avatar-news.png" alt="" onError={(e)=>{e.target.style.display='none';e.target.parentElement.style.background='#FF6B35'}}/>
+        </div>
+        <div className="pub-name">オリコンニュース</div>
+        <button className="follow-btn">友だち追加</button>
+      </div>
+    </div>
+  );
+}
+
+function SquareCover() {
+  return (
+    <>
+      <div className="square-cover">
+        <img src="images/square-cover-a.png" alt="" onError={(e)=>{e.target.style.display='none'}}/>
+        <div className="square-sound">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M6 3L3 5.5H1.5v3H3L6 11V3z" fill="#fff"/>
+            <path d="M8 5c.8.5 1.3 1.2 1.3 2s-.5 1.5-1.3 2" stroke="#fff" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div className="square-desc">
+        見てるだけでナッツの香ばしさが伝わってくる濃厚ピスタチオクリームと、さわやかないちごティラミス！マジで大好きなんだけど🍓💚
+      </div>
+    </>
+  );
+}
+
+function RankingArea({ featuredRank }) {
+  // featuredRank: 1..5 (1-based)
+  const featuredIdx = featuredRank - 1;
+  return (
+    <>
+      {RANKS.map((r, idx) => {
+        const top = getRowTop(idx, featuredIdx);
+        const isF = idx === featuredIdx;
+        return (
+          <div
+            key={r.rank}
+            className={"rank-row" + (isF ? " featured" : "")}
+            style={{ top: top + "px" }}
+          >
+            <span className="rank-number">{r.rank}</span>
+            <div className="rank-title">
+              <RankTitle rank={idx} featured={isF}/>
+            </div>
+            <div className="rank-thumb">
+              <Thumb rank={idx}/>
+            </div>
+          </div>
+        );
+      })}
+    </>
+  );
+}
+
+function TabBar() {
+  const tabs = [
+    { label: "Home", active: true },
+    { label: "Chats" },
+    { label: "Shopping" },
+    { label: "News" },
+    { label: "Wallet" }
+  ];
+  return (
+    <div className="tab-bar">
+      {tabs.map((t,i) => (
+        <div key={i} className={"tab-item" + (t.active ? " active" : "")}>
+          <div className="tab-icon">
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+              <circle cx="11" cy="11" r="9" stroke={t.active ? "#111" : "#777"} strokeWidth="1.6"/>
+            </svg>
+          </div>
+          <div className="tab-label" style={{color: t.active ? "#111" : "#777"}}>{t.label}</div>
+        </div>
+      ))}
+      <div className="home-indicator"></div>
+    </div>
+  );
+}
+
+function PhoneScreen({ featuredRank }) {
+  // Scroll to the ranking area when component mounts/featuredRank changes
+  const scrollRef = useRef(null);
+  const initialScroll = useRef(false);
+  useEffect(() => {
+    if (!initialScroll.current && scrollRef.current) {
+      scrollRef.current.scrollTop = 320;
+      initialScroll.current = true;
+    }
+  }, []);
+  return (
+    <div className="phone-frame">
+      <div className="scroll-area" ref={scrollRef}>
+        <div className="canvas">
+          <StatusBar/>
+          <Header/>
+          <ProfileRow/>
+          <GridCards/>
+          <NewsCard/>
+          <ForYouSection/>
+          <RankingArea featuredRank={featuredRank}/>
+          <SquareCover/>
+        </div>
+      </div>
+      <TabBar/>
+    </div>
+  );
+}
+
+function App() {
+  const [featured, setFeatured] = useState(1);
+  const [autoplay, setAutoplay] = useState(false);
+  const [speed, setSpeed] = useState(2500);
+
+  useEffect(() => {
+    if (!autoplay) return;
+    const id = setInterval(() => {
+      setFeatured(prev => prev === 5 ? 1 : prev + 1);
+    }, speed);
+    return () => clearInterval(id);
+  }, [autoplay, speed]);
+
+  return (
+    <div className="page">
+      <div className="case-selector">
+        <div className="title-row">
+          <div className="t1">Ranking ListType 06</div>
+          <div className="t2">5개 variant — 강조되는 랭크 위치만 다름</div>
+        </div>
+        <div className="case-label">Featured Rank</div>
+        <div className="case-row">
+          {[1,2,3,4,5].map(n => (
+            <button
+              key={n}
+              className={"case-btn" + (featured === n ? " active" : "")}
+              onClick={() => { setAutoplay(false); setFeatured(n); }}
+            >
+              <span>#{n}</span>
+              <span className="sub">{["BTS","WBC","나츠키","우메다","LISA"][n-1]}</span>
+            </button>
+          ))}
+        </div>
+        <div className="autoplay-control">
+          <button className={"ap-btn" + (autoplay ? " on" : "")} onClick={() => setAutoplay(!autoplay)}>
+            {autoplay ? "⏸ 자동 재생 정지" : "▶ 자동 재생"}
+          </button>
+          {autoplay && (
+            <>
+              <button className="ap-btn" onClick={() => setSpeed(1500)}>빠르게</button>
+              <button className="ap-btn" onClick={() => setSpeed(2500)}>보통</button>
+              <button className="ap-btn" onClick={() => setSpeed(4000)}>천천히</button>
+            </>
+          )}
+        </div>
+      </div>
+      <PhoneScreen featuredRank={featured}/>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
